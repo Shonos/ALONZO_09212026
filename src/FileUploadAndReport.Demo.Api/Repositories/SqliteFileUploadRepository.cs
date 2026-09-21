@@ -60,7 +60,14 @@ public sealed class SqliteFileUploadRepository : IFileUploadRepository
                 "$createdAtUtc",
                 DateTimeOffset.UtcNow.ToString("O", CultureInfo.InvariantCulture));
 
-            await insertCommand.ExecuteNonQueryAsync(cancellationToken);
+            try
+            {
+                await insertCommand.ExecuteNonQueryAsync(cancellationToken);
+            }
+            catch (SqliteException exception) when (exception.SqliteErrorCode == 19)
+            {
+                throw new DuplicateEventIdException(request.EventId!, exception);
+            }
         }
 
         await using (var trimCommand = connection.CreateCommand())

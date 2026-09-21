@@ -1,5 +1,6 @@
 using FileUploadAndReport.Demo.Api.Contracts.Requests;
 using FileUploadAndReport.Demo.Api.Contracts.Responses;
+using FileUploadAndReport.Demo.Api.Repositories;
 using FileUploadAndReport.Demo.Api.Services;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
@@ -24,6 +25,7 @@ public sealed class FileUploadController : ControllerBase
     [Produces("application/json")]
     [ProducesResponseType(typeof(FileUploadResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status409Conflict)]
     public async Task<ActionResult<FileUploadResponse>> Upload(
         [Required] IFormFile? file,
         CancellationToken cancellationToken)
@@ -35,7 +37,20 @@ public sealed class FileUploadController : ControllerBase
             return ValidationProblem(ModelState);
         }
 
-        return Ok(await _fileUploadService.UploadAsync(request, cancellationToken));
+        try
+        {
+            return Ok(await _fileUploadService.UploadAsync(request, cancellationToken));
+        }
+        catch (DuplicateEventIdException)
+        {
+            return Conflict(new ProblemDetails
+            {
+                Status = StatusCodes.Status409Conflict,
+                Title = "Duplicate event",
+                Detail = "An upload with this EventId already exists.",
+                Instance = HttpContext.Request.Path
+            });
+        }
     }
 
     private async Task<FileUploadRequest?> ReadAndValidateFileAsync(
