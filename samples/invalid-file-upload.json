@@ -1,0 +1,4 @@
+{
+  "eventType": "UnknownEventType",
+  "message": "This payload should fail validation."
+}

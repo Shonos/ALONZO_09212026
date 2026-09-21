@@ -1,5 +1,6 @@
 using FileUploadAndReport.Demo.Api.Contracts.Requests;
 using FileUploadAndReport.Demo.Api.Contracts.Responses;
+using FileUploadAndReport.Demo.Api.Services;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json;
@@ -11,6 +12,13 @@ namespace FileUploadAndReport.Demo.Api.Controllers;
 [Route("v1/[controller]")]
 public sealed class FileUploadController : ControllerBase
 {
+    private readonly IFileUploadService _fileUploadService;
+
+    public FileUploadController(IFileUploadService fileUploadService)
+    {
+        _fileUploadService = fileUploadService;
+    }
+
     [HttpPost]
     [Consumes("multipart/form-data")]
     [Produces("application/json")]
@@ -27,7 +35,7 @@ public sealed class FileUploadController : ControllerBase
             return ValidationProblem(ModelState);
         }
 
-        return Ok(new FileUploadResponse());
+        return Ok(await _fileUploadService.UploadAsync(request, cancellationToken));
     }
 
     private async Task<FileUploadRequest?> ReadAndValidateFileAsync(
