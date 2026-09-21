@@ -2,6 +2,7 @@ using FileUploadAndReport.Demo.Api.Contracts.Requests;
 using FileUploadAndReport.Demo.Api.Contracts.Responses;
 using FileUploadAndReport.Demo.Api.Repositories;
 using FileUploadAndReport.Demo.Api.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json;
@@ -10,6 +11,7 @@ using System.Text.Json.Serialization;
 namespace FileUploadAndReport.Demo.Api.Controllers;
 
 [ApiController]
+[Authorize]
 [Route("v1/[controller]")]
 public sealed class FileUploadController : ControllerBase
 {
