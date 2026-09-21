@@ -55,3 +55,10 @@ CodeCoverage/
 *.VisualState.xml
 TestResult.xml
 nunit-*.xml
+
+# visual studio
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates

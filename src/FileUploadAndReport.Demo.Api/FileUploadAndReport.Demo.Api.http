@@ -1,6 +1,11 @@
 @FileUploadAndReport.Demo.Api_HostAddress = http://localhost:5126
 
-GET {{FileUploadAndReport.Demo.Api_HostAddress}}/weatherforecast/
-Accept: application/json
+POST {{FileUploadAndReport.Demo.Api_HostAddress}}/v1/FileUpload
+Content-Type: multipart/form-data; boundary=UploadBoundary
 
-###
+--UploadBoundary
+Content-Disposition: form-data; name="file"; filename="sample.json"
+Content-Type: application/json
+
+{"eventId":"1234567e-8e96-12d3-456-426655440000","eventType":"OneAndOnlyEventType","message":"Sample message"}
+--UploadBoundary--
