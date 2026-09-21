@@ -2,6 +2,48 @@
 
 Demonstrates a .NET Web API with secure file upload and simple reporting.
 
+## Build and Run
+
+Both options require an API key file. Create it from the example and replace the placeholder value:
+
+```bash
+cp .env.example .env.local
+```
+
+### Option 1: .NET CLI
+
+Required tools:
+
+- .NET 10 SDK
+
+Build and run:
+
+```bash
+dotnet build
+dotnet run --project src/FileUploadAndReport.Demo.Api --launch-profile http
+```
+
+The API is available at `http://localhost:5126` and Swagger is available at `http://localhost:5126/swagger`.
+
+### Option 2: Docker
+
+Required tools:
+
+- Docker Desktop or Docker Engine
+
+Build and run:
+
+```bash
+docker build --tag file-upload-demo-api .
+docker run --rm \
+  --env-file .env.local \
+  --volume fileupload-data:/app/data \
+  --publish 8080:8080 \
+  file-upload-demo-api
+```
+
+The API is available at `http://localhost:8080` and Swagger is available at `http://localhost:8080/swagger`.
+
 ## Architecture Diagram
 
 [![Initial project architecture](project-initial-diagram.png)](project-initial-diagram.png)
